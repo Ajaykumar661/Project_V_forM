@@ -393,7 +393,7 @@ export default function Home() {
               className="font-pixel text-xs mt-8 text-black"
               style={{ textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' }}
             >
-              (The "No" button is shy 😊)
+              No amuki paaru, nee dhan dhairiyamana aal aache!
             </motion.p>
           </motion.div>
         </motion.div>
