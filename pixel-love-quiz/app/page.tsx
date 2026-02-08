@@ -37,6 +37,16 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    if (showMeme) {
+      const memeTimeoutRef = window.setTimeout(() => {
+        setShowMeme(false)
+        setHasStarted(true)
+      }, 5000)
+      return () => clearTimeout(memeTimeoutRef)
+    }
+  }, [showMeme])
+
   const current = questions[index]
   const progress = Math.round(((index + 1) / questions.length) * 100)
 
@@ -117,7 +127,12 @@ export default function Home() {
   const handleConfirmPopupClose = () => {
     setShowMeme(true)
     soundEffects.playCorrect()
-    
+  }
+
+  const handleStartQuiz = () => {
+    setShowMeme(false)
+    setHasStarted(true)
+    soundEffects.playClick()
   }
 
   const handleValentineNo = () => {
@@ -127,7 +142,6 @@ export default function Home() {
     setNoButtonPosition({ x: randomX, y: randomY })
     soundEffects.playWrong()
   }
-
   useEffect(() => {
     return () => {
       if (heartTimeoutRef.current) clearTimeout(heartTimeoutRef.current)
@@ -402,7 +416,7 @@ export default function Home() {
 
       {/* Confirmation Popup */}
       <AnimatePresence>
-        {showConfirmPopup && (
+        {showConfirmPopup && !showMeme && !hasStarted && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -462,10 +476,34 @@ export default function Home() {
                 className="font-pixel text-xs text-black mb-12"
                 style={{ textShadow: '2px 2px 0px rgba(255, 255, 255, 0.5)' }}
               >
-                A week ago you teased me, saying I don’t really know you…
+                A week ago you teased me, saying I don’t really know you.
                 So I took that personally, Stay tuned!
               </motion.p>
-
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setShowConfirmPopup(false)
+                  setHasStarted(true)
+                  soundEffects.playCorrect()
+                }}
+                style={{
+                  padding: '12px 28px',
+                  background: 'linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%)',
+                  border: '4px solid #000',
+                  borderRadius: '0px',
+                  fontFamily: '"Press Start 2P", cursive',
+                  fontSize: '10px',
+                  fontWeight: 'bold',
+                  color: '#000',
+                  cursor: 'pointer',
+                  boxShadow: '6px 6px 0 rgba(0,0,0,0.5)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}
+              >
+                Let's Go! 💕
+              </motion.button>
 
             </motion.div>
           </motion.div>
@@ -498,7 +536,7 @@ export default function Home() {
 
       {/* Meme Display Overlay */}
       <AnimatePresence>
-        {showMeme && (
+        {showMeme && !hasStarted && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -508,10 +546,11 @@ export default function Home() {
             style={{
               background: 'linear-gradient(to bottom, #ffe5ec 0%, #fff5f7 50%, #ffe5ec 100%)'
             }}
+            onClick={handleStartQuiz}
           >
             {isClient && <HangingHearts count={15} />}
             
-            <div className="flex items-center justify-center w-full gap-8">
+            <div className="flex items-center justify-center w-full gap-8 cursor-pointer">
               <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -544,6 +583,16 @@ export default function Home() {
                 >
                   ⏰💕
                 </motion.div>
+
+                <motion.p
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="font-pixel text-xs text-black text-center mt-8"
+                  style={{ textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' }}
+                >
+                  (Click to continue)
+                </motion.p>
               </motion.div>
             </div>
           </motion.div>
