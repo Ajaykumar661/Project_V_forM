@@ -317,7 +317,6 @@ export default function Home() {
               className="font-pixel text-sm mb-12 text-black"
               style={{ textShadow: '2px 2px 0px rgba(255, 255, 255, 0.5)' }}
             >
-              Will you be my valentine?
             </motion.p>
 
             {/* Yes and No Buttons Container */}
